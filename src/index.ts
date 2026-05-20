@@ -25,28 +25,6 @@ export default {
 		request: Request,
 		env: Env,
 		ctx: ExecutionContext,
-
-		export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
-
-    if (url.pathname === "/save") {
-      const { userId, messages } = await request.json();
-      await env.CHAT_HISTORY.put(userId, JSON.stringify(messages));
-      return new Response("Saved");
-    }
-
-    if (url.pathname === "/history") {
-      const { userId } = await request.json();
-      const history = await env.CHAT_HISTORY.get(userId);
-      return new Response(history || "[]", {
-        headers: { "content-type": "application/json" },
-      });
-    }
-
-    // keep your existing chat logic below
-  },
-};
 	): Promise<Response> {
 		const url = new URL(request.url);
 
