@@ -8,6 +8,7 @@
 	"main": "src/index.ts",
 	"compatibility_date": "2025-10-08",
 	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+
 	"assets": {
 		"binding": "ASSETS",
 		"directory": "./public"
@@ -19,4 +20,7 @@
 		"binding": "AI"
 	},
 	"upload_source_maps": true
+kv_namespaces = [
+  { binding = "CHAT_HISTORY", id = "your-kv-id" }
+]
 }
