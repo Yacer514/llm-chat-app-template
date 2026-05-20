@@ -25,29 +25,29 @@ export default {
 		request: Request,
 		env: Env,
 		ctx: ExecutionContext,
+export default {
+  async fetch(request, env, ctx) {
+    // write a key-value pair
+    await env.KV.put('KEY', 'VALUE');
 
-		export default {
-  async fetch(request, env) {
-    const url = new URL(request.url);
+    // read a key-value pair
+    const value = await env.KV.get('KEY');
 
-    // Save history
-    if (url.pathname === "/save") {
-      const { userId, messages } = await request.json();
-      await env.CHAT_HISTORY.put(userId, JSON.stringify(messages));
-      return new Response("Saved");
-    }
+    // list all key-value pairs
+    const allKeys = await env.KV.list();
 
-    // Load history
-    if (url.pathname === "/history") {
-      const { userId } = await request.json();
-      const history = await env.CHAT_HISTORY.get(userId);
-      return new Response(history || "[]", {
-        headers: { "content-type": "application/json" },
-      });
-    }
+    // delete a key-value pair
+    await env.KV.delete('KEY');
 
-    // ... keep your existing /chat logic here
-  },
+    // return a Workers response
+    return new Response(
+      JSON.stringify({
+        value: value,
+        allKeys: allKeys,
+      }),
+    );
+  } 
+}
 };
 	): Promise<Response> {
 		const url = new URL(request.url);
