@@ -179,5 +179,53 @@
 
 		<!-- Chat app script -->
 		<script src="chat.js"></script>
+		<script>
+const WORKER_URL = "https://cloudflaredb-pages.yasir-ali.workers.dev";
+const USER_ID = "si"; // later you can make this dynamic
+let messages = [];
+
+async function sendMessage() {
+  const input = document.getElementById("message").value;
+  messages.push({ role: "user", text: input });
+  renderMessages();
+
+  const res = await fetch(`${WORKER_URL}/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId: USER_ID, input })
+  });
+  const reply = await res.text();
+  messages.push({ role: "assistant", text: reply });
+  renderMessages();
+  saveHistory();
+}
+
+async function saveHistory() {
+  await fetch(`${WORKER_URL}/save`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId: USER_ID, messages })
+  });
+}
+
+async function loadHistory() {
+  const res = await fetch(`${WORKER_URL}/history`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId: USER_ID })
+  });
+  messages = await res.json();
+  renderMessages();
+}
+
+function renderMessages() {
+  const container = document.getElementById("chat");
+  container.innerHTML = messages.map(m =>
+    `<div class="${m.role}">${m.role}: ${m.text}</div>`
+  ).join("");
+}
+
+loadHistory();
+</script>
 	</body>
 </html>
